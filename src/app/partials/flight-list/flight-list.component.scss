@@ -1,0 +1,28 @@
+@import '../../../styles/mixin';
+@import '../../../styles/custom-material.scss';
+// Search part
+.form-flight-search{
+  max-width: 95%; margin: 0 auto;
+}
+// Results part
+.results-wrapper{
+  .wrapper{ box-shadow: 0 2px 6px 0 rgba(0,0,0,.17); border: 1px solid rgba(0, 0, 0, 0.09); border-radius: 10px; background: $white; padding: 20px 15px; margin: 10px 0;}
+  .name{ @include setFontSCW(12px, $grey_dark, 600); margin: 0 0 20px; letter-spacing: 1.2px;}
+  .price-wrapper{ @include setFontSCW(28px, $blue, 400);}
+}
+.main-text{ font-size: 20px; line-height: 1.1; position: relative;}
+.sub-text{ @include setFontSCW(13px, $grey_dark, bold); }
+.flight-basic-data{
+  width: 100%;
+  div[class*="col-"]{padding: 8px;}
+  .halts{ font-size: 13px; }
+  .data-seperator{ position: relative; z-index: 1;
+    span{@include setBoxShadow(); font-size: 14px; color: $grey_dark; padding: 8px 15px; border-radius: 50px; margin: 20px 0; display: inline-block; background: $grey_light;}
+    &::before{
+      content:''; height: 1px; background: $grey_mid; position: absolute; left:0; right: 0; top: 50%; z-index: -1;
+    }
+  }
+  &.split-basic-data{
+    .main-text{ font-size: 16px;}
+  }
+}

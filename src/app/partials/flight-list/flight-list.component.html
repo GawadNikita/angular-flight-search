@@ -1,0 +1,206 @@
+<div class="row">
+  <div class="col-lg-3 col-md-12 col-sm-12">
+    <form [formGroup]="searchFormFields" (ngSubmit)="onSubmit()"> 
+      <mat-radio-group class="btn-block mb-4"  formControlName="tripType">
+        <mat-radio-button  [value]="0">One way</mat-radio-button>
+        <mat-radio-button [value]="1">Return</mat-radio-button>
+      </mat-radio-group>
+      <mat-form-field>
+        <input type="text"
+               placeholder="Pick origin city"
+               aria-label="Number"
+               matInput
+               formControlName="originCity"
+               [matAutocomplete]="auto">
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+            {{option}}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+      <mat-form-field>
+        <input type="text"
+               placeholder="Pick destination city"
+               aria-label="Number"
+               matInput
+               formControlName="destinationCity"
+               [matAutocomplete]="auto">
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+            {{option}}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Choose departure date</mat-label>
+        <input matInput [matDatepicker]="dp_departure"  formControlName="departureDate"> 
+        <mat-datepicker-toggle matSuffix [for]="dp_departure"></mat-datepicker-toggle>
+        <mat-datepicker  [startAt]="defaultDepartureDate" #dp_departure></mat-datepicker>
+      </mat-form-field>
+      <mat-form-field *ngIf="searchFormFields.value.tripType == 1">
+        <mat-label>Choose departure date</mat-label>
+        <input matInput [matDatepicker]="dp_returnDate" [min]="searchFormFields.value.departureDate" formControlName="returnDate"> 
+        <mat-datepicker-toggle matSuffix [for]="dp_returnDate"></mat-datepicker-toggle>
+        <mat-datepicker [startAt]="searchFormFields.value.departureDate" #dp_returnDate></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width">
+        <mat-label>Enter no. of passengers</mat-label>
+        <input matInput formControlName="passengerCount">
+        <mat-hint>Only 5 tickets allowed per booking</mat-hint>
+      </mat-form-field>
+
+     <div>
+      <mat-slider formControlName="priceRange" thumbLabel [displayWith]="formatLabel" tickInterval="1000" min="0" max="15000" [(ngModel)]="priceRange"></mat-slider>
+     </div>
+      <div class="form-group text-right">
+        <button type="submit" class="btn btn-primary btn-block">Search</button>
+      </div>
+    </form>
+  </div>
+  <div class="col-lg-9 col-md-12 col-sm-12">
+    <div class="row">
+      <div class="{{searchFormFields.value.tripType == 1 ? 'col-lg-6' : 'col-lg-12'}}" >
+        <div class="main-text">{{searchFormFields.value.originCity}} to {{searchFormFields.value.destinationCity}}</div>
+        <div class="sub-text mb-5">{{finalResult.oneWay.flights.length}} flight(s) found on {{searchFormFields.value.departureDate | date :'MMMM, dd yyyy'}}</div>
+        <mat-accordion class="example-headers-align" multi >
+          <mat-expansion-panel *ngFor="let flight of finalResult.oneWay.flights">
+            <mat-expansion-panel-header class="custom-styling-expansion">
+              <mat-panel-title>
+                <div class="row flight-basic-data align-items-center {{searchFormFields.value.tripType == 1 ? 'split-basic-data' : ''}}">
+                  <div class="col-lg-1 col-md-1 p-0">
+                    <img src="https://via.placeholder.com/100x100/55ACEE/ffffff/?text=logo&fontSize=14" class="img-fluid" alt="">
+                  </div>
+                  <div class="col-lg-3 col-md-3">
+                    <div class="main-text">{{flight.name}} </div>
+                    <div class="sub-text">{{flight.flightNo}}</div>
+                  </div>
+                  <div class="col-lg-2 col-md-2 text-center">
+                    <div class="main-text">{{flight.departureTime| date: 'HH:mm'}}</div>
+                    <div class="sub-text">{{flight.origin}} </div>
+                    
+                  </div>
+                  <div class="col-lg-2 col-md-2 text-center">
+                    <div class="sub-text">{{flight.total_duration}} HRS</div>
+                    <span class="halts">{{flight.hops.length>1 ? flight.hops.length-1 + 'halt(s)' :' Non stop flight'}}</span>
+                  </div>
+                  <div class="col-lg-2 col-md-2 text-center"> 
+                    <div class="main-text">{{flight.arrivalTime| date: 'HH:mm'}}</div>
+                    <div class="sub-text">{{flight.destination}}</div>
+                  </div>
+                  <div class="col-lg-2 col-md-2 text-right"> 
+                    <div class="main-text mb-3">&#8377; {{(searchFormFields.value.passengerCount>= 6) ? flight.total_sum : (flight.total_sum * searchFormFields.value.passengerCount) | number}}</div>
+                    <button class="btn btn-primary">Book</button>
+                  </div>
+                </div>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+        
+            <div *ngIf="flight.hop !=0">           
+              <div class="row flight-basic-data align-items-center" *ngFor="let hop of flight.hops; let i = index;">
+                <div class="col-lg-1 col-md-1 p-0">
+                  <img src="https://via.placeholder.com/100x100/55ACEE/ffffff/?text=logo&fontSize=14" class="img-fluid" alt="">
+                </div>
+                <div class="col-lg-3 col-md-3">
+                  <div class="main-text">{{hop.name}} </div>
+                  <div class="sub-text">{{hop.flightNo}}</div>
+                </div>
+                <div class="col-lg-2 col-md-2 text-center">
+                  <div class="main-text">{{hop.departureTime| date: 'HH:mm'}}</div>
+                  <div class="sub-text">{{hop.origin}} </div>
+                </div>
+                <div class="col-lg-2 col-md-2 text-center">
+                  <div class="sub-text">{{hop.flight_duration}} HRS</div>
+                </div>
+                <div class="col-lg-2 col-md-2 text-center"> 
+                  <div class="main-text">{{hop.arrivalTime| date: 'HH:mm'}}</div>
+                  <div class="sub-text">{{hop.destination}}</div>
+                </div>
+                <div class="col-lg-2 col-md-2 text-right"> 
+                  <div class="main-text mb-3">&#8377; {{(searchFormFields.value.passengerCount>= 6) ? hop.price : (hop.price * searchFormFields.value.passengerCount) | number}}</div>
+                </div>
+                <div *ngIf="i != flight.hops.length-1" class="col-lg-12 col-md-12 text-center">
+                  <div class="data-seperator">
+                    <span>Change flight at <strong>{{hop.destination}}</strong></span>
+                  </div>
+                </div> 
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+      <div class="col-lg-6" *ngIf="searchFormFields.value.tripType ==1">
+        <div class="main-text">{{searchFormFields.value.destinationCity}} to {{searchFormFields.value.originCity}}</div>
+        <div class="sub-text mb-5">{{finalResult.return.flights.length}} flight(s) found on {{searchFormFields.value.returnDate | date :'MMMM, dd yyyy'}}</div>
+        <mat-accordion class="example-headers-align" multi >
+          <mat-expansion-panel *ngFor="let flight of finalResult.return.flights">
+            <mat-expansion-panel-header class="custom-styling-expansion">
+              <mat-panel-title>
+                <div class="row flight-basic-data align-items-center {{searchFormFields.value.tripType == 1 ? 'split-basic-data' : ''}}">
+                  <div class="col-lg-1 col-md-1 p-0">
+                    <img src="https://via.placeholder.com/100x100/55ACEE/ffffff/?text=logo&fontSize=14" class="img-fluid" alt="">
+                  </div>
+                  <div class="col-lg-3 col-md-3">
+                    <div class="main-text">{{flight.name}} </div>
+                    <div class="sub-text">{{flight.flightNo}}</div>
+                  </div>
+                  <div class="col-lg-2 col-md-2 text-center">
+                    <div class="main-text">{{flight.departureTime| date: 'HH:mm'}}</div>
+                    <div class="sub-text">{{flight.origin}} </div>
+                    
+                  </div>
+                  <div class="col-lg-2 col-md-2 text-center">
+                    <div class="sub-text">{{flight.total_duration}} HRS</div>
+                    <span class="halts">{{flight.hops.length>1 ? flight.hops.length-1 + 'halt(s)' :' Non stop flight'}}</span>
+                  </div>
+                  <div class="col-lg-2 col-md-2 text-center"> 
+                    <div class="main-text">{{flight.arrivalTime| date: 'HH:mm'}}</div>
+                    <div class="sub-text">{{flight.destination}}</div>
+                  </div>
+                  <div class="col-lg-2 col-md-2 text-right"> 
+                    <div class="main-text mb-3">&#8377; {{(searchFormFields.value.passengerCount>= 6) ? flight.total_sum : (flight.total_sum * searchFormFields.value.passengerCount) | number}}</div>
+                    <button class="btn btn-primary">Book</button>
+                  </div>
+                </div>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+        
+            <div *ngIf="flight.hop !=0">           
+              <div class="row flight-basic-data align-items-center" *ngFor="let hop of flight.hops; let i = index;">
+                <div class="col-lg-1 col-md-1 p-0">
+                  <img src="https://via.placeholder.com/100x100/55ACEE/ffffff/?text=logo&fontSize=14" class="img-fluid" alt="">
+                </div>
+                <div class="col-lg-3 col-md-3">
+                  <div class="main-text">{{hop.name}} </div>
+                  <div class="sub-text">{{hop.flightNo}}</div>
+                </div>
+                <div class="col-lg-2 col-md-2 text-center">
+                  <div class="main-text">{{hop.departureTime| date: 'HH:mm'}}</div>
+                  <div class="sub-text">{{hop.origin}} </div>
+                </div>
+                <div class="col-lg-2 col-md-2 text-center">
+                  <div class="sub-text">{{hop.flight_duration}} HRS</div>
+                </div>
+                <div class="col-lg-2 col-md-2 text-center"> 
+                  <div class="main-text">{{hop.arrivalTime| date: 'HH:mm'}}</div>
+                  <div class="sub-text">{{hop.destination}}</div>
+                </div>
+                <div class="col-lg-2 col-md-2 text-right"> 
+                  <div class="main-text mb-3">&#8377; {{(searchFormFields.value.passengerCount>= 6) ? hop.price : (hop.price * searchFormFields.value.passengerCount) | number}}</div>
+                </div>
+                <div *ngIf="i != flight.hops.length-1" class="col-lg-12 col-md-12 text-center">
+                  <div class="data-seperator">
+                    <span>Change flight at <strong>{{hop.destination}}</strong></span>
+                  </div>
+                </div> 
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+
+      </div>
+    </div>
+  </div>
+</div>
+

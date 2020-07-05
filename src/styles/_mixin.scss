@@ -1,0 +1,15 @@
+@import './var';
+@mixin setFontSCW($font-size, $font-color, $font-weight){
+  font-size: $font-size; color: $font-color;
+  @if($font-weight != null){ font-weight : $font-weight; }
+  @else{ font-weight : normal; }
+}
+
+@mixin setBoxShadow(){
+  box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.17); border: 1px solid rgba(0, 0, 0, 0.09); border-radius: 10px;
+}
+
+@mixin setButton($bgColor){
+  background: $bgColor; border-color: transparent; outline: none;
+}
+

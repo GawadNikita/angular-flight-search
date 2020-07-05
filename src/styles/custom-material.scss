@@ -1,0 +1,53 @@
+@import './mixin';
+*{ font-family: $defaultFont;}
+mat-radio-group{
+  @include setBoxShadow();
+  .mat-radio-container{ display: none;}
+  .mat-radio-button{
+    font-size: 13px; color: $grey_dark; width: 50%; border-right: 1px solid rgba(0, 0, 0, 0.09);
+    &:last-of-type{ border: none;}
+    .mat-radio-label{
+      margin: 0; border-radius: 0;
+      .mat-radio-label-content{padding: 6px 12px; text-transform: uppercase;}
+    }
+    &.mat-radio-checked{  
+      .mat-radio-label{background: $blue; color: $white;}
+    }
+    &:first-child{
+      .mat-radio-label{ border-radius: 10px 0 0 10px;}
+    }
+    &:last-child{ 
+      .mat-radio-label{border-radius: 0 10px 10px 0;}
+    }
+  }
+}
+//range slider
+.mat-slider-horizontal{ width: 100%;}
+.mat-accent{
+  .mat-slider-track-fill, .mat-slider-thumb, .mat-slider-thumb-label{
+    background: $blue;
+  } 
+  .mat-slider-thumb-label-text{ color: $white; }
+}
+.mat-slider-min-value.mat-slider-thumb-label-showing{
+  .mat-slider-thumb, .mat-slider-thumb-label{ background: $blue;}
+}
+
+.mat-expansion-panel-header{
+  &.custom-styling-expansion{
+    padding: 15px 10px; height: unset;
+    .mat-expansion-panel-header-title{ margin: 0 15px;}
+  }
+}
+
+@media screen and (min-width: 992px){
+  .mat-form-field{ display: block !important;}
+}
+
+@media screen and (max-width: 991px){
+  .mat-form-field{
+    padding : 0 12px; 
+    &:first-child{ padding-left: 0}
+    &:last-child{ padding-right: 0}
+  }
+}

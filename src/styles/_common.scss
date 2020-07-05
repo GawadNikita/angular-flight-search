@@ -1,0 +1,13 @@
+@import './mixin';
+html, body{
+  color: $black; font-family: $defaultFont; font-size: 14px;
+}
+.custom-element-wrapper { margin: 0 auto; max-width: 90%;}
+.btn-primary{
+  @include setButton($blue);
+  &:active, &:focus, &:hover{ @include setButton($blue); }
+  &:hover{ @include setButton($hover_blue)}
+}
+@media screen and (min-width: 1280px){
+  .custom-element-wrapper{max-width: 1000px;}
+}
