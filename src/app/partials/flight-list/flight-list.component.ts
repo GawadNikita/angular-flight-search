@@ -1,15 +1,14 @@
-import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder,FormGroup, Validators } from '@angular/forms';
 import {Observable} from 'rxjs';
-import {map, startWith, max} from 'rxjs/operators';
+import {map, startWith} from 'rxjs/operators';
 import { FlightDataService } from '../../../app/service/flightData/flight-data.service';
 
 const city = ['Pune (PNQ)', 'Mumbai (BOM)', 'Bengalaru (BLR)', 'Delhi (DEL)'] 
 @Component({
   selector: 'app-flight-list',
   templateUrl: './flight-list.component.html',
-  styleUrls: ['./flight-list.component.scss'], 
-  encapsulation : ViewEncapsulation.None
+  styleUrls: ['./flight-list.component.scss']
 })
 
 export class FlightListComponent implements OnInit {
